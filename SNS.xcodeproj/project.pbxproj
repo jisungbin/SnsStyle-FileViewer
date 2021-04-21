@@ -3,13 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		3619FF2D08B173F56EA87F6B /* Pods_SNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0BA036027B8CC3D28D5063 /* Pods_SNS.framework */; };
+		9B7C7C712630A34D00E943DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7C7C702630A34D00E943DA /* ContentView.swift */; };
 		9BE050E42630590000C94209 /* SNSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE050E32630590000C94209 /* SNSApp.swift */; };
-		9BE050E62630590000C94209 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE050E52630590000C94209 /* ContentView.swift */; };
 		9BE050E82630590000C94209 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BE050E72630590000C94209 /* Assets.xcassets */; };
 		9BE050EB2630590000C94209 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BE050EA2630590000C94209 /* Preview Assets.xcassets */; };
 		9BE050F426305A9800C94209 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE050F326305A9800C94209 /* StatusBarController.swift */; };
@@ -20,9 +20,9 @@
 		2CA954797434E1E9071B1151 /* Pods-SNS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SNS.release.xcconfig"; path = "Target Support Files/Pods-SNS/Pods-SNS.release.xcconfig"; sourceTree = "<group>"; };
 		2E0BA036027B8CC3D28D5063 /* Pods_SNS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SNS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67A3A9BE8006DB5BCBFAB1FC /* Pods-SNS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SNS.debug.xcconfig"; path = "Target Support Files/Pods-SNS/Pods-SNS.debug.xcconfig"; sourceTree = "<group>"; };
+		9B7C7C702630A34D00E943DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9BE050E02630590000C94209 /* SNS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE050E32630590000C94209 /* SNSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSApp.swift; sourceTree = "<group>"; };
-		9BE050E52630590000C94209 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9BE050E72630590000C94209 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9BE050EA2630590000C94209 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9BE050EC2630590000C94209 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -72,8 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				9BE050F326305A9800C94209 /* StatusBarController.swift */,
+				9B7C7C702630A34D00E943DA /* ContentView.swift */,
 				9BE050E32630590000C94209 /* SNSApp.swift */,
-				9BE050E52630590000C94209 /* ContentView.swift */,
 				9BE050E72630590000C94209 /* Assets.xcassets */,
 				9BE050EC2630590000C94209 /* Info.plist */,
 				9BE050E92630590000C94209 /* Preview Content */,
@@ -96,7 +96,6 @@
 				67A3A9BE8006DB5BCBFAB1FC /* Pods-SNS.debug.xcconfig */,
 				2CA954797434E1E9071B1151 /* Pods-SNS.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -214,8 +213,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BE050F72630639300C94209 /* ImagePickerView.swift in Sources */,
-				9BE050E62630590000C94209 /* ContentView.swift in Sources */,
 				9BE050F426305A9800C94209 /* StatusBarController.swift in Sources */,
+				9B7C7C712630A34D00E943DA /* ContentView.swift in Sources */,
 				9BE050E42630590000C94209 /* SNSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
