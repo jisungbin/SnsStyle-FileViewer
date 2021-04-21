@@ -11,7 +11,9 @@ import SwiftUI
 struct SNSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView {
+                ContentView()
+            }
         }
     }
 }
