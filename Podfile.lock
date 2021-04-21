@@ -1,0 +1,16 @@
+PODS:
+  - ToastSwiftUI (0.3.0)
+
+DEPENDENCIES:
+  - ToastSwiftUI
+
+SPEC REPOS:
+  trunk:
+    - ToastSwiftUI
+
+SPEC CHECKSUMS:
+  ToastSwiftUI: ff231b329bbe7482a1fe9d1e5bf789a9319fb77c
+
+PODFILE CHECKSUM: 96d9817a94d8219051be994c0760f8b4841765d3
+
+COCOAPODS: 1.10.1
