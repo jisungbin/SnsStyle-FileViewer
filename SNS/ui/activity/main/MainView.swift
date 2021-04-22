@@ -64,40 +64,14 @@ struct AddItemView: View {
     
     @State var description = ""
     @State var showDocPicker = false
-    @State private var fileUrl: URL?
     @State private var fileName = "파일 선택"
+    @State private var pickedImage: UIImage?
     @State private var openFile = false
-    
-    func requirePhotoPermission() {
-        let requiredAccessLevel: PHAccessLevel = .readWrite
-        PHPhotoLibrary.requestAuthorization(for: requiredAccessLevel) { authorizationStatus in
-            switch authorizationStatus {
-            case .limited:
-                print("limited authorization granted")
-            case .authorized:
-                print("authorization granted")
-            default:
-                //FIXME: Implement handling for all authorizationStatus
-                print("Unimplemented")
-                
-            }
-        }
-    }
-    
-    private func load(_ fileUrl: URL) -> UIImage? {
-        do {
-            let imageData = try Data(contentsOf: fileUrl)
-            return UIImage(data: imageData)
-        } catch {
-            print("Error loading image : \(error)")
-        }
-        return nil
-    }
     
     var body: some View {
         VStack {
-            if fileUrl != nil {
-                Image(uiImage: load(self.fileUrl!)!)
+            if pickedImage != nil {
+                Image(uiImage: pickedImage!)
                     .resizable()
                     .frame(width: 150, height: 150)
                     .clipShape(Circle())
@@ -122,10 +96,15 @@ struct AddItemView: View {
         .padding()
         .fileImporter(isPresented: self.$openFile, allowedContentTypes: [.png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio]) { (result) in
             do {
-                let fileURL = try result.get()
-                self.fileUrl = fileURL
-                self.fileName = fileURL.lastPathComponent
-                print(fileURL)
+                let fileUrl = try result.get()
+                fileName = fileUrl.lastPathComponent
+                
+                guard fileUrl.startAccessingSecurityScopedResource() else { return }
+                if let imageData = try? Data(contentsOf: fileUrl),
+                   let image = UIImage(data: imageData) {
+                    pickedImage = image
+                }
+                fileUrl.stopAccessingSecurityScopedResource()
             } catch {
                 print(error.localizedDescription)
             }
