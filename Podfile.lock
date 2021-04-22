@@ -1,16 +1,20 @@
 PODS:
+  - lottie-ios (3.2.1)
   - ToastSwiftUI (0.3.0)
 
 DEPENDENCIES:
+  - lottie-ios
   - ToastSwiftUI
 
 SPEC REPOS:
   trunk:
+    - lottie-ios
     - ToastSwiftUI
 
 SPEC CHECKSUMS:
+  lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
   ToastSwiftUI: ff231b329bbe7482a1fe9d1e5bf789a9319fb77c
 
-PODFILE CHECKSUM: 96d9817a94d8219051be994c0760f8b4841765d3
+PODFILE CHECKSUM: 1ba524b28a81f87b84bde5b3c85c4ad074af3336
 
 COCOAPODS: 1.10.1
