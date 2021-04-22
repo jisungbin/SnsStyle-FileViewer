@@ -11,4 +11,6 @@ import SwiftUI
 class MainViewModel: ObservableObject {
     @Published var profileImage: UIImage?
     @Published var isMainView = false
+    @Published var fileItems = [FileItem]()
+    @Published var favoriteItems = [FileItem]()
 }

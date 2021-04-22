@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ViewBind: View {
+struct BindView: View {
     @ObservedObject var vm = MainViewModel()
     
     var body: some View {
