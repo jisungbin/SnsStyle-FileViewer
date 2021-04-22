@@ -39,19 +39,21 @@ struct PhotoView: View {
     var item: FileItem
     @ObservedObject var vm: MainViewModel
     
-    
     var body: some View {
         VStack {
-            Image(uiImage: item.image)
+            Image(uiImage: item.image!)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 250, height: 250)
             HStack {
-                HStack {
+                HStack() {
                     if vm.favoriteItems.contains(item.id) { // 즐찾 포함
                         Image(systemName: "heart.fill")
                             .onTapGesture {
                                 vm.favoriteItems.append(item.id)
+                            }
+                            .onLongPressGesture {
+                                vm.favoriteItems.remove(at: vm.favoriteItems.firstIndex(of: item.id)!)
                             }
                     } else {
                         Image(systemName: "heart")
@@ -61,9 +63,9 @@ struct PhotoView: View {
                     }
                     Text(String(vm.favoriteItems.filter { $0 == item.id }.count))
                 }
-                Text(item.comment)
-            }.frame(maxWidth: .infinity).background(Color.blue)
-        }.padding().frame(maxWidth: .infinity).background(Color.red)
+                Text(item.comment).frame(maxWidth: .infinity, alignment: .trailing)
+            }.frame(maxWidth: .infinity, alignment: .leading)
+        }.padding().frame(maxWidth: .infinity)
     }
 }
 
@@ -156,10 +158,11 @@ struct AddItemView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.bottom, 30)
             Button(action: {
+                hideKeyboard()
                 if fileName == "파일 선택" {
                     toastIcon = ToastView.Icon.error
                     isShownToast = true
-                    toastMessage = "먼저 항목을 선택 해 주세요."
+                    toastMessage = "먼저 파일을 선택 해 주세요."
                 } else {
                     let fileItem = FileItem(comment: description, image: pickedImage!, time: getNowTime(), type: FileType.PHOTO)
                     vm.fileItems.append(fileItem)
@@ -206,6 +209,35 @@ struct FavoriteView: View {
     @ObservedObject var vm: MainViewModel
     
     var body: some View {
-        Color.red
+        let favoriteItems = vm.fileItems.filter { (item: FileItem) -> Bool in return vm.favoriteItems.contains(item.id) }
+        
+        if vm.favoriteItems.isEmpty {
+            VStack {
+                LottieView(filename: "empty-favorite").frame(width: 250, height: 250)
+                Text("좋아요한 게시글이 없어요 😥\n맘에 드는 게시글에 좋아요를 해 보세요 :)").multilineTextAlignment(.center)
+            }
+        } else {
+            ScrollView {
+                VStack {
+                    ForEach(favoriteItems) { item in
+                        switch item.type {
+                        case FileType.PHOTO: PhotoView(item: item, vm: vm)
+                        case FileType.VIDEO: VideoView(item: item)
+                        default: AudioView(item: item)
+                        }
+                    }
+                }
+            }.frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .center
+            )
+        }
+    }
+}
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

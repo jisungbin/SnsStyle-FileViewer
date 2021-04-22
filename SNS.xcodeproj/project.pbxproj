@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3619FF2D08B173F56EA87F6B /* Pods_SNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0BA036027B8CC3D28D5063 /* Pods_SNS.framework */; };
 		9B7C7C712630A34D00E943DA /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7C7C702630A34D00E943DA /* SignInView.swift */; };
+		9BC52E5626321C9E0033D065 /* empty-favorite.json in Resources */ = {isa = PBXBuildFile; fileRef = 9BC52E5526321C9E0033D065 /* empty-favorite.json */; };
 		9BE050E42630590000C94209 /* SNSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE050E32630590000C94209 /* SNSApp.swift */; };
 		9BE050EB2630590000C94209 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BE050EA2630590000C94209 /* Preview Assets.xcassets */; };
 		9BE050F72630639300C94209 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE050F62630639300C94209 /* ImagePickerView.swift */; };
@@ -28,6 +29,7 @@
 		2E0BA036027B8CC3D28D5063 /* Pods_SNS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SNS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67A3A9BE8006DB5BCBFAB1FC /* Pods-SNS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SNS.debug.xcconfig"; path = "Target Support Files/Pods-SNS/Pods-SNS.debug.xcconfig"; sourceTree = "<group>"; };
 		9B7C7C702630A34D00E943DA /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		9BC52E5526321C9E0033D065 /* empty-favorite.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "empty-favorite.json"; path = "../../../../Downloads/empty-favorite.json"; sourceTree = "<group>"; };
 		9BE050E02630590000C94209 /* SNS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE050E32630590000C94209 /* SNSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSApp.swift; sourceTree = "<group>"; };
 		9BE050EA2630590000C94209 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		9BEF59152631974E006C2C8A /* lottie */ = {
 			isa = PBXGroup;
 			children = (
+				9BC52E5526321C9E0033D065 /* empty-favorite.json */,
 				9BEF591626319796006C2C8A /* empty.json */,
 			);
 			path = lottie;
@@ -226,6 +229,7 @@
 				9BEF58F0263178B8006C2C8A /* Assets.xcassets in Resources */,
 				9BEF591726319796006C2C8A /* empty.json in Resources */,
 				9BE050EB2630590000C94209 /* Preview Assets.xcassets in Resources */,
+				9BC52E5626321C9E0033D065 /* empty-favorite.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
