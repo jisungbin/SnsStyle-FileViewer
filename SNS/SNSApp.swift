@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct SNSApp: App {
-    var body: some Scene {
+   var body: some Scene {
         WindowGroup {
             RootView {
-                ContentView()
+                SignInView()
             }
         }
     }

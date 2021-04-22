@@ -3,7 +3,7 @@
 //  SNS
 //
 //  Created by Ji Sungbin on 2021/04/21.
-// https://github.com/ralfebert/ImagePickerView
+//  https://github.com/ralfebert/ImagePickerView
 //
 
 import SwiftUI
