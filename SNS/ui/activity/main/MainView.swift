@@ -43,20 +43,46 @@ struct ItemView: View {
     var body: some View {
         VStack {
             if item.type == FileType.PHOTO {
-                Image(uiImage: item.image!)
+                let _ = item.url.startAccessingSecurityScopedResource()
+                let imageData = try! Data(contentsOf: item.url)
+                Image(uiImage: UIImage(data: imageData)!)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250, height: 250)
+                let _ = item.url.stopAccessingSecurityScopedResource()
             } else if item.type == FileType.VIDEO {
                 Text("TODO")
             } else { // Audio
                 let _ = item.url.startAccessingSecurityScopedResource()
                 let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
-                Button(action: {
-                    audioPlayer.play()
-                }) {
-                    Text("Play")
-                }
+                HStack {
+                    Button(action: {
+                        audioPlayer.play()
+                    }) {
+                        Image(systemName: "play.circle")
+                            .padding(10.0)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(lineWidth: 2)
+                                    .shadow(color: .gray, radius: 10)
+                            )
+                            .foregroundColor(.gray)
+                            .padding(.top, 50)
+                    }.padding(.trailing, 30)
+                    Button(action: {
+                        audioPlayer.pause()
+                    }) {
+                        Image(systemName: "pause.circle")
+                            .padding(10.0)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(lineWidth: 2)
+                                    .shadow(color: .gray, radius: 10)
+                            )
+                            .foregroundColor(.gray)
+                            .padding(.top, 50)
+                    }.padding(.leading, 30)
+                }.frame(maxWidth: .infinity, alignment: Alignment.center).padding()
                 let _ = item.url.stopAccessingSecurityScopedResource()
             }
             HStack {
@@ -167,7 +193,7 @@ struct AddItemView: View {
                     } else if ["mp4"].contains(fileSuffix) {
                         fileType = FileType.VIDEO
                     }
-                    let fileItem = FileItem(url: fileUrl!, comment: description, image: pickedImage, time: getNowTime(), type: fileType)
+                    let fileItem = FileItem(url: fileUrl!, comment: description, time: getNowTime(), type: fileType)
                     vm.fileItems.append(fileItem)
                     toastIcon = ToastView.Icon.success
                     isShownToast = true
@@ -187,18 +213,6 @@ struct AddItemView: View {
                 let fileUrl = try result.get()
                 self.fileUrl = fileUrl
                 fileName = fileUrl.lastPathComponent
-                
-                guard fileUrl.startAccessingSecurityScopedResource() else {
-                    toastIcon = ToastView.Icon.error
-                    isShownToast = true
-                    toastMessage = "Error at show image."
-                    return
-                }
-                if let imageData = try? Data(contentsOf: fileUrl),
-                   let image = UIImage(data: imageData) {
-                    pickedImage = image
-                }
-                fileUrl.stopAccessingSecurityScopedResource()
             } catch {
                 toastIcon = ToastView.Icon.error
                 isShownToast = true
