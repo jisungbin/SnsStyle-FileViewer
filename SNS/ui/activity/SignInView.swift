@@ -16,13 +16,13 @@ struct SignInView: View {
     var body: some View {
         VStack {
             if vm.profileImage == nil {
-                Image("ic_outline_profile_512")
+                Image(systemName: "person.crop.circle")
                     .renderingMode(.template)
                     .resizable()
                     .frame(width: 150, height: 150)
                     .foregroundColor(.gray)
                     .onTapGesture {
-                        self.isShownImagePicker.toggle()
+                        isShownImagePicker.toggle()
                     }
             } else {
                 Image(uiImage: vm.profileImage!)
@@ -31,7 +31,7 @@ struct SignInView: View {
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.gray, lineWidth: 2).shadow(radius: 10))
                     .onTapGesture {
-                        self.isShownImagePicker.toggle()
+                        isShownImagePicker.toggle()
                     }
             }
             Button(action: {
@@ -58,8 +58,7 @@ struct SignInView: View {
             alignment: .center
         )
         .padding()
-        .background(Color(UIColor(named:"colorPrimary")!)
-                        .edgesIgnoringSafeArea(.all))
+        .background(Color.white).edgesIgnoringSafeArea(.all)
         .sheet(isPresented: $isShownImagePicker) {
             ImagePickerView(sourceType: .photoLibrary) { image in
                 vm.profileImage = image

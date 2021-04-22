@@ -10,6 +10,7 @@ import SwiftUI
 import ToastSwiftUI
 import UniformTypeIdentifiers
 import Photos
+import AVKit
 
 struct MainView: View {
     @ObservedObject var vm: MainViewModel
@@ -35,16 +36,29 @@ struct MainView: View {
     }
 }
 
-struct PhotoView: View {
+struct ItemView: View {
     var item: FileItem
     @ObservedObject var vm: MainViewModel
     
     var body: some View {
         VStack {
-            Image(uiImage: item.image!)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 250, height: 250)
+            if item.type == FileType.PHOTO {
+                Image(uiImage: item.image!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 250, height: 250)
+            } else if item.type == FileType.VIDEO {
+                Text("TODO")
+            } else { // Audio
+                let _ = item.url.startAccessingSecurityScopedResource()
+                let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
+                Button(action: {
+                    audioPlayer.play()
+                }) {
+                    Text("Play")
+                }
+                let _ = item.url.stopAccessingSecurityScopedResource()
+            }
             HStack {
                 HStack() {
                     if vm.favoriteItems.contains(item.id) { // 즐찾 포함
@@ -69,22 +83,6 @@ struct PhotoView: View {
     }
 }
 
-struct VideoView: View {
-    var item: FileItem
-    
-    var body: some View {
-        Color.red
-    }
-}
-
-struct AudioView: View {
-    var item: FileItem
-    
-    var body: some View {
-        Color.red
-    }
-}
-
 struct NewsView: View {
     @ObservedObject var vm: MainViewModel
     
@@ -98,11 +96,7 @@ struct NewsView: View {
             ScrollView {
                 VStack {
                     ForEach(vm.fileItems) { item in
-                        switch item.type {
-                        case FileType.PHOTO: PhotoView(item: item, vm: vm)
-                        case FileType.VIDEO: VideoView(item: item)
-                        default: AudioView(item: item)
-                        }
+                        ItemView(item: item, vm: vm)
                     }
                 }
             }.frame(
@@ -121,6 +115,7 @@ struct AddItemView: View {
     @State private var showDocPicker = false
     @State private var fileName = "파일 선택"
     @State private var pickedImage: UIImage?
+    @State private var fileUrl: URL?
     @State private var isShownPicker = false
     @State private var isShownToast = false
     @State private var toastMessage = ""
@@ -164,7 +159,15 @@ struct AddItemView: View {
                     isShownToast = true
                     toastMessage = "먼저 파일을 선택 해 주세요."
                 } else {
-                    let fileItem = FileItem(comment: description, image: pickedImage!, time: getNowTime(), type: FileType.PHOTO)
+                    // .png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio
+                    var fileType = FileType.PHOTO
+                    let fileSuffix = fileUrl!.pathExtension
+                    if ["mp3", "m4a"].contains(fileSuffix) {
+                        fileType = FileType.AUDIO
+                    } else if ["mp4"].contains(fileSuffix) {
+                        fileType = FileType.VIDEO
+                    }
+                    let fileItem = FileItem(url: fileUrl!, comment: description, image: pickedImage, time: getNowTime(), type: fileType)
                     vm.fileItems.append(fileItem)
                     toastIcon = ToastView.Icon.success
                     isShownToast = true
@@ -182,6 +185,7 @@ struct AddItemView: View {
         .fileImporter(isPresented: self.$isShownPicker, allowedContentTypes: [.png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio]) { (result) in
             do {
                 let fileUrl = try result.get()
+                self.fileUrl = fileUrl
                 fileName = fileUrl.lastPathComponent
                 
                 guard fileUrl.startAccessingSecurityScopedResource() else {
@@ -220,11 +224,7 @@ struct FavoriteView: View {
             ScrollView {
                 VStack {
                     ForEach(favoriteItems) { item in
-                        switch item.type {
-                        case FileType.PHOTO: PhotoView(item: item, vm: vm)
-                        case FileType.VIDEO: VideoView(item: item)
-                        default: AudioView(item: item)
-                        }
+                        ItemView(item: item, vm: vm)
                     }
                 }
             }.frame(

@@ -12,7 +12,7 @@ class HostingController<Content: View>: UIHostingController<Content> {
     }
 }
 
-///By wrapping views in a RootView, they will become the app's main / primary view. This will enable setting the statusBarStyle.
+// By wrapping views in a RootView, they will become the app's main / primary view. This will enable setting the statusBarStyle.
 struct RootView<Content: View> : View {
     var content: Content
     
@@ -29,10 +29,10 @@ struct RootView<Content: View> : View {
 }
 
 extension View {
-    ///Sets the status bar style color for this view.
+    // Sets the status bar style color for this view.
     func statusBarStyle(_ style: UIStatusBarStyle) -> some View {
         UIApplication.statusBarStyleHierarchy.append(style)
-        //Once this view appears, set the style to the new style. Once it disappears, set it to the previous style.
+        // Once this view appears, set the style to the new style. Once it disappears, set it to the previous style.
         return self.onAppear {
             UIApplication.setStatusBarStyle(style)
         }.onDisappear {
@@ -50,7 +50,7 @@ extension UIApplication {
     static var statusBarStyleHierarchy: [UIStatusBarStyle] = []
     static var statusBarStyle: UIStatusBarStyle = .darkContent
     
-    ///Sets the App to start at rootView
+    // Sets the App to start at rootView
     func setHostingController(rootView: AnyView) {
         let hostingController = HostingController(rootView: AnyView(rootView))
         windows.first?.rootViewController = hostingController

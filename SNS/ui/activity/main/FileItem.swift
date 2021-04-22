@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FileItem: Identifiable {
     var id = UUID()
+    var url: URL
     var comment: String
     var image: UIImage? // 이거 memory-leak 안나나?
     var time: String
