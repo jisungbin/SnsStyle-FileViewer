@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
-class ProfileViewModel : ObservableObject {
+class MainViewModel: ObservableObject {
     @Published var profileImage: UIImage?
+    @Published var isMainView = false
 }
