@@ -9,7 +9,6 @@ import Foundation
 
 struct FileItem: Identifiable {
     var id = UUID()
-    var name: String
     var comment: String
-    // var fileUrl: URL
+    var fileUrl: URL
 }

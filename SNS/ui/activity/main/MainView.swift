@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
+import Photos
 
 struct MainView: View {
     @ObservedObject var vm: MainViewModel
@@ -46,7 +47,7 @@ struct NewsView: View {
             ScrollView {
                 VStack {
                     ForEach(vm.fileItems) { item in
-                        Text(item.name)
+                        // Text(item.name)
                     }
                 }
             }.frame(
@@ -59,14 +60,49 @@ struct NewsView: View {
 }
 
 struct AddItemView: View {
+    @ObservedObject var vm: MainViewModel
+    
     @State var description = ""
     @State var showDocPicker = false
-    @ObservedObject var vm: MainViewModel
+    @State private var fileUrl: URL?
     @State private var fileName = "파일 선택"
     @State private var openFile = false
     
+    func requirePhotoPermission() {
+        let requiredAccessLevel: PHAccessLevel = .readWrite
+        PHPhotoLibrary.requestAuthorization(for: requiredAccessLevel) { authorizationStatus in
+            switch authorizationStatus {
+            case .limited:
+                print("limited authorization granted")
+            case .authorized:
+                print("authorization granted")
+            default:
+                //FIXME: Implement handling for all authorizationStatus
+                print("Unimplemented")
+                
+            }
+        }
+    }
+    
+    private func load(_ fileUrl: URL) -> UIImage? {
+        do {
+            let imageData = try Data(contentsOf: fileUrl)
+            return UIImage(data: imageData)
+        } catch {
+            print("Error loading image : \(error)")
+        }
+        return nil
+    }
+    
     var body: some View {
         VStack {
+            if fileUrl != nil {
+                Image(uiImage: load(self.fileUrl!)!)
+                    .resizable()
+                    .frame(width: 150, height: 150)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.gray, lineWidth: 2).shadow(radius: 10))
+            }
             Button(action: {
                 openFile.toggle()
             }) {
@@ -84,10 +120,12 @@ struct AddItemView: View {
                 .padding(.top, 30)
         }
         .padding()
-        .fileImporter(isPresented: self.$openFile, allowedContentTypes: [.png, .jpeg, .mp3, .mpeg4Movie]) { (result) in
+        .fileImporter(isPresented: self.$openFile, allowedContentTypes: [.png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio]) { (result) in
             do {
                 let fileURL = try result.get()
+                self.fileUrl = fileURL
                 self.fileName = fileURL.lastPathComponent
+                print(fileURL)
             } catch {
                 print(error.localizedDescription)
             }
