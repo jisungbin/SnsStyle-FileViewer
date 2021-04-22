@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -208,7 +208,6 @@
 			);
 			mainGroup = 9BE050D72630590000C94209;
 			packageReferences = (
-				9BEF591A26319B47006C2C8A /* XCRemoteSwiftPackageReference "document-picker" */,
 			);
 			productRefGroup = 9BE050E12630590000C94209 /* Products */;
 			projectDirPath = "";
@@ -479,17 +478,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		9BEF591A26319B47006C2C8A /* XCRemoteSwiftPackageReference "document-picker" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/swiftuilib/document-picker";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 9BE050D82630590000C94209 /* Project object */;
 }

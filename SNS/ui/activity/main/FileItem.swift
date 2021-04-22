@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct FileItem: Identifiable {
     var id = UUID()
     var comment: String
-    var fileUrl: URL
+    var image: UIImage
+    var time: String
+    var type: FileType
 }
