@@ -36,61 +36,71 @@ struct MainView: View {
     }
 }
 
+struct FileItemBind: View {
+    @State var item: FileItem
+    @State var isShownDetailView: Binding<Bool>
+    
+    var body: some View {
+        if item.type == FileType.PHOTO {
+            let _ = item.url.startAccessingSecurityScopedResource()
+            let imageData = try! Data(contentsOf: item.url)
+            Image(uiImage: UIImage(data: imageData)!)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 250, height: 250)
+                .onTapGesture {
+                    isShownDetailView.wrappedValue.toggle()
+                }
+            let _ = item.url.stopAccessingSecurityScopedResource()
+        } else if item.type == FileType.VIDEO {
+            let _ = item.url.startAccessingSecurityScopedResource()
+            VideoPlayer(player: AVPlayer(url: item.url)) {
+                VStack {
+                    Text("AAA").frame(height: 50)
+                }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            }
+            let _ = item.url.stopAccessingSecurityScopedResource()
+        } else { // Audio
+            let _ = item.url.startAccessingSecurityScopedResource()
+            let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
+            HStack(alignment: .firstTextBaseline) {
+                Button(action: {
+                    if audioPlayer.isPlaying {
+                        audioPlayer.pause()
+                    } else {
+                        audioPlayer.play()
+                    }
+                }) {
+                    Image(systemName: "playpause")
+                        .padding(10.0)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(lineWidth: 2)
+                                .shadow(color: .gray, radius: 10)
+                        )
+                        .foregroundColor(.gray)
+                        .padding(.top, 50)
+                }.padding(.trailing, 20)
+                Text(item.url.lastPathComponent)
+                    .padding(.leading, 20)
+                    .onTapGesture {
+                        isShownDetailView.wrappedValue.toggle()
+                    }
+            }.frame(alignment: .center).padding()
+            let _ = item.url.stopAccessingSecurityScopedResource()
+        }
+    }
+}
+
 struct ItemView: View {
     var item: FileItem
     @ObservedObject var vm: MainViewModel
-    @State private var isShownDetailView = false
+    @State var trashBoolean = false
+    @State var isShownDetailView = false
     
     var body: some View {
         VStack {
-            if item.type == FileType.PHOTO {
-                let _ = item.url.startAccessingSecurityScopedResource()
-                let imageData = try! Data(contentsOf: item.url)
-                Image(uiImage: UIImage(data: imageData)!)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 250)
-                    .onTapGesture {
-                        isShownDetailView.toggle()
-                    }
-                let _ = item.url.stopAccessingSecurityScopedResource()
-            } else if item.type == FileType.VIDEO {
-                let _ = item.url.startAccessingSecurityScopedResource()
-                VideoPlayer(player: AVPlayer(url: item.url)) {
-                    VStack {
-                        Text("AAA").frame(height: 50)
-                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                }
-                let _ = item.url.stopAccessingSecurityScopedResource()
-            } else { // Audio
-                let _ = item.url.startAccessingSecurityScopedResource()
-                let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
-                HStack(alignment: .firstTextBaseline) {
-                    Button(action: {
-                        if audioPlayer.isPlaying {
-                            audioPlayer.pause()
-                        } else {
-                            audioPlayer.play()
-                        }
-                    }) {
-                        Image(systemName: "playpause")
-                            .padding(10.0)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(lineWidth: 2)
-                                    .shadow(color: .gray, radius: 10)
-                            )
-                            .foregroundColor(.gray)
-                            .padding(.top, 50)
-                    }.padding(.trailing, 30)
-                    Text(item.url.lastPathComponent)
-                        .padding(.leading, 30)
-                        .onTapGesture {
-                            isShownDetailView.toggle()
-                        }
-                }.frame(maxWidth: .infinity, alignment: .center).padding()
-                let _ = item.url.stopAccessingSecurityScopedResource()
-            }
+            FileItemBind(item: item, isShownDetailView: $isShownDetailView)
             HStack {
                 HStack() {
                     if vm.favoriteItems.contains(item.id) { // 즐찾 포함
@@ -120,31 +130,46 @@ struct ItemView: View {
                 HStack {
                     Image(uiImage: vm.profileImage!)
                         .resizable()
-                        .frame(width: 75, height: 75)
+                        .frame(width: 50, height: 50)
                         .clipShape(Circle())
                         .overlay(Circle().stroke(Color.gray, lineWidth: 2).shadow(radius: 10))
-                    Text(item.time)
-                }
-                Text("Content View - TODO")
+                        .padding(.trailing, 15)
+                    Text(item.time).padding(.leading, 15)
+                }.padding(.bottom, 30)
+                FileItemBind(item: item, isShownDetailView: $trashBoolean)
                 HStack() {
                     Text(item.comment)
-                    if vm.favoriteItems.contains(item.id) { // 즐찾 포함
-                        Image(systemName: "heart.fill")
-                            .foregroundColor(.pink)
-                            .onTapGesture {
-                                vm.favoriteItems.append(item.id)
-                            }
-                            .onLongPressGesture {
-                                vm.favoriteItems.remove(at: vm.favoriteItems.firstIndex(of: item.id)!)
-                            }
-                    } else {
-                        Image(systemName: "heart")
-                            .foregroundColor(.pink)
-                            .onTapGesture {
-                                vm.favoriteItems.append(item.id)
-                            }
-                    }
-                }
+                    HStack {
+                        if vm.favoriteItems.contains(item.id) { // 즐찾 포함
+                            Image(systemName: "heart.fill")
+                                .foregroundColor(.pink)
+                                .onTapGesture {
+                                    vm.favoriteItems.append(item.id)
+                                }
+                                .onLongPressGesture {
+                                    vm.favoriteItems.remove(at: vm.favoriteItems.firstIndex(of: item.id)!)
+                                }
+                        } else {
+                            Image(systemName: "heart")
+                                .foregroundColor(.pink)
+                                .onTapGesture {
+                                    vm.favoriteItems.append(item.id)
+                                }
+                        }
+                    }.frame(alignment: .trailing)
+                }.frame(alignment: .leading).padding(.top, 30)
+                Button(action: {
+                    isShownDetailView.toggle()
+                }) {
+                    Text("닫기")
+                        .padding(10.0)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(lineWidth: 2)
+                                .shadow(color: .gray, radius: 10)
+                        )
+                        .foregroundColor(.gray)
+                }.padding(.top, 10)
             }.onTapGesture {
                 isShownDetailView.toggle()
             }.padding()
