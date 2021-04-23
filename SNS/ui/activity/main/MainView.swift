@@ -39,6 +39,7 @@ struct MainView: View {
 struct ItemView: View {
     var item: FileItem
     @ObservedObject var vm: MainViewModel
+    @State var player = AVPlayer()
     
     var body: some View {
         VStack {
@@ -51,15 +52,25 @@ struct ItemView: View {
                     .frame(width: 250, height: 250)
                 let _ = item.url.stopAccessingSecurityScopedResource()
             } else if item.type == FileType.VIDEO {
-                Text("TODO")
+                let _ = item.url.startAccessingSecurityScopedResource()
+                VideoPlayer(player: AVPlayer(url: item.url)) {
+                    VStack {
+                        Text("AAA").frame(height: 50)
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                }
+                let _ = item.url.stopAccessingSecurityScopedResource()
             } else { // Audio
                 let _ = item.url.startAccessingSecurityScopedResource()
                 let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     Button(action: {
-                        audioPlayer.play()
+                        if audioPlayer.isPlaying {
+                            audioPlayer.pause()
+                        } else {
+                            audioPlayer.play()
+                        }
                     }) {
-                        Image(systemName: "play.circle")
+                        Image(systemName: "playpause")
                             .padding(10.0)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -69,19 +80,7 @@ struct ItemView: View {
                             .foregroundColor(.gray)
                             .padding(.top, 50)
                     }.padding(.trailing, 30)
-                    Button(action: {
-                        audioPlayer.pause()
-                    }) {
-                        Image(systemName: "pause.circle")
-                            .padding(10.0)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(lineWidth: 2)
-                                    .shadow(color: .gray, radius: 10)
-                            )
-                            .foregroundColor(.gray)
-                            .padding(.top, 50)
-                    }.padding(.leading, 30)
+                    Text(item.url.lastPathComponent).padding(.leading, 30)
                 }.frame(maxWidth: .infinity, alignment: Alignment.center).padding()
                 let _ = item.url.stopAccessingSecurityScopedResource()
             }
