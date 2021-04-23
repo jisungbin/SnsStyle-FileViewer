@@ -39,7 +39,7 @@ struct MainView: View {
 struct ItemView: View {
     var item: FileItem
     @ObservedObject var vm: MainViewModel
-    @State var player = AVPlayer()
+    @State private var isShownDetailView = false
     
     var body: some View {
         VStack {
@@ -50,6 +50,9 @@ struct ItemView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250, height: 250)
+                    .onTapGesture {
+                        isShownDetailView.toggle()
+                    }
                 let _ = item.url.stopAccessingSecurityScopedResource()
             } else if item.type == FileType.VIDEO {
                 let _ = item.url.startAccessingSecurityScopedResource()
@@ -80,7 +83,11 @@ struct ItemView: View {
                             .foregroundColor(.gray)
                             .padding(.top, 50)
                     }.padding(.trailing, 30)
-                    Text(item.url.lastPathComponent).padding(.leading, 30)
+                    Text(item.url.lastPathComponent)
+                        .padding(.leading, 30)
+                        .onTapGesture {
+                            isShownDetailView.toggle()
+                        }
                 }.frame(maxWidth: .infinity, alignment: Alignment.center).padding()
                 let _ = item.url.stopAccessingSecurityScopedResource()
             }
@@ -88,6 +95,7 @@ struct ItemView: View {
                 HStack() {
                     if vm.favoriteItems.contains(item.id) { // 즐찾 포함
                         Image(systemName: "heart.fill")
+                            .foregroundColor(.pink)
                             .onTapGesture {
                                 vm.favoriteItems.append(item.id)
                             }
@@ -96,6 +104,7 @@ struct ItemView: View {
                             }
                     } else {
                         Image(systemName: "heart")
+                            .foregroundColor(.pink)
                             .onTapGesture {
                                 vm.favoriteItems.append(item.id)
                             }
@@ -104,7 +113,43 @@ struct ItemView: View {
                 }
                 Text(item.comment).frame(maxWidth: .infinity, alignment: .trailing)
             }.frame(maxWidth: .infinity, alignment: .leading)
-        }.padding().frame(maxWidth: .infinity)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .modal(isPresented: $isShownDetailView) {
+            VStack {
+                HStack {
+                    Image(uiImage: vm.profileImage!)
+                        .resizable()
+                        .frame(width: 75, height: 75)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.gray, lineWidth: 2).shadow(radius: 10))
+                    Text(item.time)
+                }
+                Text("Content View - TODO")
+                HStack() {
+                    Text(item.comment)
+                    if vm.favoriteItems.contains(item.id) { // 즐찾 포함
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(.pink)
+                            .onTapGesture {
+                                vm.favoriteItems.append(item.id)
+                            }
+                            .onLongPressGesture {
+                                vm.favoriteItems.remove(at: vm.favoriteItems.firstIndex(of: item.id)!)
+                            }
+                    } else {
+                        Image(systemName: "heart")
+                            .foregroundColor(.pink)
+                            .onTapGesture {
+                                vm.favoriteItems.append(item.id)
+                            }
+                    }
+                }
+            }.onTapGesture {
+                isShownDetailView.toggle()
+            }.padding()
+        }
     }
 }
 
