@@ -10,12 +10,10 @@ import SwiftUI
 
 struct ModalView<Parent: View, Content: View>: View {
     @Environment(\.modalStyle) var style: AnyModalStyle
-    
     @Binding var isPresented: Bool
     
     var parent: Parent
     var content: Content
-    
     let backgroundRectangle = Rectangle()
     
     var body: some View {
@@ -77,15 +75,11 @@ protocol ModalStyle {
 
 extension ModalStyle {
     func anyMakeBackground(configuration: BackgroundConfiguration, isPresented: Binding<Bool>) -> AnyView {
-        AnyView(
-            makeBackground(configuration: configuration, isPresented: isPresented)
-        )
+        AnyView(makeBackground(configuration: configuration, isPresented: isPresented))
     }
     
     func anyMakeModal(configuration: ModalContentConfiguration, isPresented: Binding<Bool>) -> AnyView {
-        AnyView(
-            makeModal(configuration: configuration, isPresented: isPresented)
-        )
+        AnyView(makeModal(configuration: configuration, isPresented: isPresented))
     }
 }
 
@@ -127,8 +121,7 @@ extension EnvironmentValues {
 
 extension View {
     func modalStyle<Style: ModalStyle>(_ style: Style) -> some View {
-        self
-            .environment(\.modalStyle, AnyModalStyle(style))
+        self.environment(\.modalStyle, AnyModalStyle(style))
     }
 }
 
@@ -145,12 +138,12 @@ struct ModalStyleModalContentConfiguration {
 // Default Modal Style
 
 struct DefaultModalStyle: ModalStyle {
-    let animation: Animation? = .easeInOut(duration: 0.5)
+    let animation: Animation? = .easeInOut(duration: 0.25)
     
     func makeBackground(configuration: ModalStyle.BackgroundConfiguration, isPresented: Binding<Bool>) -> some View {
         configuration.background
             .edgesIgnoringSafeArea(.all)
-            .foregroundColor(.black)
+            .foregroundColor(.white)
             .opacity(0.3)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .zIndex(1000)
@@ -163,6 +156,7 @@ struct DefaultModalStyle: ModalStyle {
         configuration.content
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray, lineWidth: 2).shadow(radius: 10))
             .zIndex(1001)
     }
 }

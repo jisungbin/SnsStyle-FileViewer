@@ -88,7 +88,7 @@ struct ItemView: View {
                         .onTapGesture {
                             isShownDetailView.toggle()
                         }
-                }.frame(maxWidth: .infinity, alignment: Alignment.center).padding()
+                }.frame(maxWidth: .infinity, alignment: .center).padding()
                 let _ = item.url.stopAccessingSecurityScopedResource()
             }
             HStack {
@@ -115,7 +115,6 @@ struct ItemView: View {
             }.frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .modal(isPresented: $isShownDetailView) {
             VStack {
                 HStack {
