@@ -54,11 +54,11 @@ struct FileItemBind: View {
             let _ = item.url.stopAccessingSecurityScopedResource()
         } else if item.type == FileType.VIDEO {
             let _ = item.url.startAccessingSecurityScopedResource()
-            VideoPlayer(player: AVPlayer(url: item.url)) {
-                VStack {
-                    Text("AAA").frame(height: 50)
-                }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            }
+            let player = AVPlayer(url: item.url)
+            VideoPlayer(player: player)
+                .onAppear() { player.play() }
+                .onDisappear() { player.pause() }
+                .frame(maxWidth: .infinity, minHeight: 300, maxHeight: 300)
             let _ = item.url.stopAccessingSecurityScopedResource()
         } else { // Audio
             let _ = item.url.startAccessingSecurityScopedResource()

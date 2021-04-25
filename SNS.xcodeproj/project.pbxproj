@@ -68,6 +68,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9B481BA726360D42002A051F /* model */ = {
+			isa = PBXGroup;
+			children = (
+				9BEF58FF263180E6006C2C8A /* FileItem.swift */,
+				9BEF59022631810C006C2C8A /* FileType.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		9BE050D72630590000C94209 = {
 			isa = PBXGroup;
 			children = (
@@ -141,9 +150,8 @@
 		9BEF58FE263180D3006C2C8A /* main */ = {
 			isa = PBXGroup;
 			children = (
+				9B481BA726360D42002A051F /* model */,
 				9BEF58EA2631786C006C2C8A /* MainView.swift */,
-				9BEF58FF263180E6006C2C8A /* FileItem.swift */,
-				9BEF59022631810C006C2C8A /* FileType.swift */,
 			);
 			path = main;
 			sourceTree = "<group>";
