@@ -2,7 +2,7 @@
 //  StatusBarController.swift
 //  Insert this into your project.
 //  Created by Xavier Donnellon
-//  https://github.com/xavierdonnellon/swiftui-statusbarstyle
+//  https://github.com/xavierdonnellon/swiftui-statusbarstyle // 오픈소스
 //
 import SwiftUI
 

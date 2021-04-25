@@ -3,7 +3,7 @@
 //  SNS
 //
 //  Created by Ji Sungbin on 2021/04/23.
-//  https://blog.kaltoun.cz/custom-modal-dialog-with-swiftui/
+//  https://blog.kaltoun.cz/custom-modal-dialog-with-swiftui/ // 오픈소스
 //
 
 import SwiftUI
