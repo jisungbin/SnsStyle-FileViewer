@@ -48,9 +48,7 @@ struct FileItemBind: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 250, height: 250)
-                .onTapGesture {
-                    isShownDetailView.wrappedValue.toggle()
-                }
+                .onTapGesture { isShownDetailView.wrappedValue.toggle() }
             let _ = item.url.stopAccessingSecurityScopedResource()
         } else if item.type == FileType.VIDEO {
             let _ = item.url.startAccessingSecurityScopedResource()
@@ -59,17 +57,15 @@ struct FileItemBind: View {
                 .onAppear() { player.play() }
                 .onDisappear() { player.pause() }
                 .frame(maxWidth: .infinity, minHeight: 300, maxHeight: 300)
+                .onTapGesture { isShownDetailView.wrappedValue.toggle() }
             let _ = item.url.stopAccessingSecurityScopedResource()
         } else { // Audio
             let _ = item.url.startAccessingSecurityScopedResource()
             let audioPlayer = try! AVAudioPlayer(contentsOf: item.url)
             HStack(alignment: .firstTextBaseline) {
                 Button(action: {
-                    if audioPlayer.isPlaying {
-                        audioPlayer.pause()
-                    } else {
-                        audioPlayer.play()
-                    }
+                    if audioPlayer.isPlaying { audioPlayer.pause() }
+                    else { audioPlayer.play() }
                 }) {
                     Image(systemName: "playpause")
                         .padding(10.0)
@@ -83,10 +79,11 @@ struct FileItemBind: View {
                 }.padding(.trailing, 20)
                 Text(item.url.lastPathComponent)
                     .padding(.leading, 20)
-                    .onTapGesture {
-                        isShownDetailView.wrappedValue.toggle()
-                    }
-            }.frame(alignment: .center).padding()
+                    .onTapGesture { isShownDetailView.wrappedValue.toggle() }
+            }
+            .frame(alignment: .center)
+            .onTapGesture { isShownDetailView.wrappedValue.toggle() }
+            .padding()
             let _ = item.url.stopAccessingSecurityScopedResource()
         }
     }
@@ -208,12 +205,11 @@ struct AddItemView: View {
     @State private var description = ""
     @State private var showDocPicker = false
     @State private var fileName = "파일 선택"
-    @State private var pickedImage: UIImage?
-    @State private var fileUrl: URL?
     @State private var isShownPicker = false
     @State private var isShownToast = false
     @State private var toastMessage = ""
     @State private var toastIcon = ToastView.Icon.error
+    @State private var selectedFile: FileItem?
     
     private func getNowTime() -> String {
         let dateFormatter = DateFormatter()
@@ -223,12 +219,48 @@ struct AddItemView: View {
     
     var body: some View {
         VStack {
-            if pickedImage != nil {
-                Image(uiImage: pickedImage!)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .padding(.bottom, 30)
+            if selectedFile != nil {
+                if selectedFile!.type == FileType.PHOTO {
+                    let _ = selectedFile!.url.startAccessingSecurityScopedResource()
+                    let imageData = try! Data(contentsOf: selectedFile!.url)
+                    Image(uiImage: UIImage(data: imageData)!)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 150)
+                    let _ = selectedFile!.url.stopAccessingSecurityScopedResource()
+                } else if selectedFile!.type == FileType.VIDEO {
+                    let _ = selectedFile!.url.startAccessingSecurityScopedResource()
+                    let player = AVPlayer(url: selectedFile!.url)
+                    VideoPlayer(player: player)
+                        .onAppear() { player.play() }
+                        .onDisappear() { player.pause() }
+                        .frame(maxWidth: .infinity, minHeight: 300, maxHeight: 300)
+                    let _ = selectedFile!.url.stopAccessingSecurityScopedResource()
+                } else { // Audio
+                    let _ = selectedFile!.url.startAccessingSecurityScopedResource()
+                    let audioPlayer = try! AVAudioPlayer(contentsOf: selectedFile!.url)
+                    HStack(alignment: .firstTextBaseline) {
+                        Button(action: {
+                            if audioPlayer.isPlaying {
+                                audioPlayer.pause()
+                            } else {
+                                audioPlayer.play()
+                            }
+                        }) {
+                            Image(systemName: "playpause")
+                                .padding(10.0)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(lineWidth: 2)
+                                        .shadow(color: .gray, radius: 10)
+                                )
+                                .foregroundColor(.gray)
+                                .padding(.top, 50)
+                        }.padding(.trailing, 20)
+                        Text(selectedFile!.url.lastPathComponent).padding(.leading, 20)
+                    }.frame(alignment: .center)
+                    let _ = selectedFile!.url.stopAccessingSecurityScopedResource()
+                }
             }
             Button(action: {
                 isShownPicker.toggle()
@@ -242,7 +274,7 @@ struct AddItemView: View {
                     )
                     .foregroundColor(.gray)
                     .padding(.bottom, 30)
-            }
+            }.padding(.top, 30)
             TextField("추가 메시지 입력", text: $description)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.bottom, 30)
@@ -253,15 +285,7 @@ struct AddItemView: View {
                     isShownToast = true
                     toastMessage = "먼저 파일을 선택 해 주세요."
                 } else {
-                    // .png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio
-                    var fileType = FileType.PHOTO
-                    let fileSuffix = fileUrl!.pathExtension
-                    if ["mp3", "m4a"].contains(fileSuffix) {
-                        fileType = FileType.AUDIO
-                    } else if ["mp4"].contains(fileSuffix) {
-                        fileType = FileType.VIDEO
-                    }
-                    let fileItem = FileItem(url: fileUrl!, comment: description, time: getNowTime(), type: fileType)
+                    let fileItem = FileItem(url: selectedFile!.url, comment: description, time: selectedFile!.time, type: selectedFile!.type)
                     vm.fileItems.append(fileItem)
                     toastIcon = ToastView.Icon.success
                     isShownToast = true
@@ -279,7 +303,15 @@ struct AddItemView: View {
         .fileImporter(isPresented: self.$isShownPicker, allowedContentTypes: [.png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio]) { (result) in
             do {
                 let fileUrl = try result.get()
-                self.fileUrl = fileUrl
+                // .png, .jpeg, .mp3, .mpeg4Movie, .movie, .mpeg4Audio
+                var fileType = FileType.PHOTO
+                let fileSuffix = fileUrl.pathExtension
+                if ["mp3", "m4a"].contains(fileSuffix) {
+                    fileType = FileType.AUDIO
+                } else if ["mp4"].contains(fileSuffix) {
+                    fileType = FileType.VIDEO
+                }
+                selectedFile = FileItem(url: fileUrl, comment: "", time: getNowTime(), type: fileType)
                 fileName = fileUrl.lastPathComponent
             } catch {
                 toastIcon = ToastView.Icon.error
