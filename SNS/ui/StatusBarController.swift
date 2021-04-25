@@ -1,9 +1,10 @@
 //
 //  StatusBarController.swift
-//  Insert this into your project.
-//  Created by Xavier Donnellon
+//  SNS
+//
 //  https://github.com/xavierdonnellon/swiftui-statusbarstyle // 오픈소스
 //
+
 import SwiftUI
 
 class HostingController<Content: View>: UIHostingController<Content> {

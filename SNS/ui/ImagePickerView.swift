@@ -2,7 +2,6 @@
 //  ImagePickerView.swift
 //  SNS
 //
-//  Created by Ji Sungbin on 2021/04/21.
 //  https://github.com/ralfebert/ImagePickerView // 오픈소스
 //
 
